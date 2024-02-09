@@ -2,6 +2,7 @@ package org.launchcode.techjobs.persistent.controllers;
 
 import jakarta.validation.Valid;
 import org.launchcode.techjobs.persistent.models.Employer;
+import org.launchcode.techjobs.persistent.models.data.EmployerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,6 +14,20 @@ import java.util.Optional;
 @Controller
 @RequestMapping("employers")
 public class EmployerController {
+
+    @Autowired
+    private EmployerRepository employerRepository;
+    //controller can now make use of the interface
+
+
+    //employerRepository will be put in the methods with the appropriate crud interface methods
+    @GetMapping("/")
+    public String index(Model model) {
+        //use findAll() here to get all employers in database
+        model.addAttribute("employers", employerRepository.findAll());
+
+        return "employers/add";
+    }
 
     @GetMapping("add")
     public String displayAddEmployerForm(Model model) {
@@ -27,14 +42,16 @@ public class EmployerController {
         if (errors.hasErrors()) {
             return "employers/add";
         }
-
-        return "redirect:";
+        //use .save() here to save the created object
+        employerRepository.save(newEmployer);
+        return "redirect:../";
     }
 
     @GetMapping("view/{employerId}")
     public String displayViewEmployer(Model model, @PathVariable int employerId) {
-
-        Optional optEmployer = null;
+    //views an individual employer object
+        //Use findById()
+        Optional optEmployer = employerRepository.findById(employerId);
         if (optEmployer.isPresent()) {
             Employer employer = (Employer) optEmployer.get();
             model.addAttribute("employer", employer);
