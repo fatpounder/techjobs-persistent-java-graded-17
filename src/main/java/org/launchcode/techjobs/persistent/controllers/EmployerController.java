@@ -26,7 +26,7 @@ public class EmployerController {
         //use findAll() here to get all employers in database
         model.addAttribute("employers", employerRepository.findAll());
 
-        return "employers/add";
+        return "employers/index";
     }
 
     @GetMapping("add")
