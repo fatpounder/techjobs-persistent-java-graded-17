@@ -65,11 +65,14 @@ public class HomeController {
             model.addAttribute("title", "Add Job");
             return "add";
             //checking for error first, then move on
-        } else {
-            Optional<Employer> result = employerRepository.findById(employerId);
-            if (result.isPresent()) {
+        }
+        Optional<Employer> result = employerRepository.findById(employerId);
+            if (result.isEmpty()) {
+                model.addAttribute("title", "Invalid Employer ID: " + employerId);
+            } else {
                 Employer employer = result.get();
                 newJob.setEmployer(employer);
+                model.addAttribute("title", "Employer ID: " + employerId);
                 //get the employer results and set the newJob with it
 
             }
@@ -81,7 +84,6 @@ public class HomeController {
 
             return "redirect:";
         }
-    }
 
     @GetMapping("view/{jobId}")
     public String displayViewJob(Model model, @PathVariable int jobId) {
